@@ -1,6 +1,6 @@
 # 🧠 Disease Prediction Web App
 
-A Flask-based web application that predicts diseases based on selected symptoms using a trained Random Forest model.
+A Flask-based web application that predicts diseases based on selected symptoms using a trained ML model.
 
 ---
 
@@ -10,7 +10,7 @@ A Flask-based web application that predicts diseases based on selected symptoms 
 * Clean, responsive UI using **Tailwind CSS**
 * Trained on synthetic + noisy data to avoid overfitting
 * Modular folder structure for scalability
-* Includes developer info and contact pages
+* Includes developer info
 
 ---
 
@@ -19,8 +19,7 @@ A Flask-based web application that predicts diseases based on selected symptoms 
 1. **Clone the repo**:
 
    ```bash
-   git clone https://github.com/rishabh3562/disease-predictor.git
-   cd disease-predictor
+   https://github.com/rishabh3562/Disease-Prediction.git
    ```
 
 2. **Create and activate virtual environment**:
@@ -76,3 +75,14 @@ reach out via email above.
 ## 📄 License
 
 This project is licensed under the MIT License.
+
+---
+
+## 📸 Screenshots
+
+![image](https://github.com/user-attachments/assets/55164d5e-7c3c-4048-93de-69c3d8620d23)
+![image](https://github.com/user-attachments/assets/3626da54-2e79-4b45-8694-9fccef169d7a)
+![image](https://github.com/user-attachments/assets/c7db3a3d-9b65-458f-a012-7315c9b33c50)
+
+
+
