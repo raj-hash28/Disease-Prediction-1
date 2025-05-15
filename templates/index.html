@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Disease Predictor</title>
+</head>
+
+<body>
+    <h2>Disease Prediction</h2>
+    <form method="POST">
+        {% for i in range(1, 18) %}
+        <label>Symptom {{ i }}:</label>
+        <select name="symptom{{ i }}">
+            <option value="">--Select Symptom--</option>
+            {% for symptom in symptom_list %}
+            <option value="{{ symptom }}" {% if request.form.get('symptom' ~ i)==symptom %}selected{% endif %}>
+                {{ symptom }}
+            </option>
+            {% endfor %}
+        </select><br><br>
+        {% endfor %}
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if prediction %}
+    <h3>Predicted Disease: {{ prediction }}</h3>
+    {% endif %}
+</body>
+
+</html>

@@ -172,3 +172,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+#notebooks models for the time being i am ignoring the models to avoid confusion
+# my main .pkl file folder is models
+notebooks/model
