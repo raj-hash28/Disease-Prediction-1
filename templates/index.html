@@ -1,4 +1,122 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block title %}MediPredict - AI Powered Disease Prediction{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-primary-600 to-primary-800 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24">
+        <div class="md:flex md:items-center md:justify-between">
+            <div class="md:w-1/2 animate-slide-up">
+                <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-4">Predict Health Conditions With AI</h1>
+                <p class="text-xl mb-6 text-primary-100">Early detection is key to better health outcomes. Our
+                    AI-powered tool helps identify potential health concerns based on your symptoms.</p>
+                <a href="/predict"
+                    class="bg-white text-primary-700 hover:bg-primary-50 font-medium py-3 px-6 rounded-lg shadow-md inline-flex items-center transition duration-150 transform hover:scale-105">
+                    Get Started
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20"
+                        fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </a>
+            </div>
+            <div class="md:w-1/2 mt-8 md:mt-0">
+                <img src="https://images.pexels.com/photos/7579831/pexels-photo-7579831.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                    alt="Medical professional with digital tablet"
+                    class="rounded-lg shadow-xl mx-auto w-full max-w-md animate-fade-in">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-12 md:py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How MediPredict Works</h2>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">Our system uses advanced machine learning algorithms to
+                analyze your symptoms and provide potential health condition predictions.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div
+                class="bg-gray-50 rounded-lg p-8 shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-900">Input Your Symptoms</h3>
+                <p class="text-gray-600">Select from our comprehensive list of symptoms to accurately describe what
+                    you're experiencing.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div
+                class="bg-gray-50 rounded-lg p-8 shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z">
+                        </path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-900">AI Analysis</h3>
+                <p class="text-gray-600">Our machine learning algorithm processes your symptoms to identify potential
+                    health conditions.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div
+                class="bg-gray-50 rounded-lg p-8 shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1">
+                <div class="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold mb-2 text-gray-900">Get Results</h3>
+                <p class="text-gray-600">Receive potential diagnoses and recommendations for next steps or medical
+                    consultation.</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="/predict"
+                class="inline-flex items-center bg-primary-600 hover:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg shadow-md transition duration-150 transform hover:scale-105">
+                Try It Now
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd"
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z"
+                        clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Disclaimer -->
+<section class="bg-gray-100 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-lg shadow-md p-8 border-l-4 border-warning-500">
+            <h3 class="text-xl font-semibold mb-2 text-gray-900">Important Disclaimer</h3>
+            <p class="text-gray-600">MediPredict is not a substitute for professional medical advice, diagnosis, or
+                treatment. Always seek the advice of your physician or other qualified health provider with any
+                questions you may have regarding a medical condition.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+<!-- <!DOCTYPE html>
 <html>
 
 <head>
@@ -42,4 +160,4 @@
     </div>
 </body>
 
-</html>
+</html> -->

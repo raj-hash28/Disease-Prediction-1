@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}MediPredict - Symptom Analysis{% endblock %}
+
+{% block head %}
+<style>
+    /* Custom styling for the multi-select */
+    [x-cloak] {
+        display: none !important;
+    }
+
+    .select-badge {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .select-badge:hover {
+        background-color: #ef4444;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-12 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Symptom Analysis</h1>
+            <p class="mt-2 text-lg text-gray-600">Select up to 7 symptoms you're experiencing for an AI-powered
+                prediction</p>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6 md:p-8 mb-8 animate-fade-in">
+            <form method="POST" action="/predict" x-data='{
+                selectedSymptoms: [],
+                searchTerm: "",
+                maxSymptoms: 7,
+
+                get filteredSymptoms() {
+                    return this.searchTerm === "" 
+                        ? [] 
+                        : {{ symptoms_list|tojson }}.filter(s => 
+                            s.toLowerCase().includes(this.searchTerm.toLowerCase()) && 
+                            !this.selectedSymptoms.includes(s)
+                        ).slice(0, 10);
+                },
+
+                addSymptom(symptom) {
+                    if (this.selectedSymptoms.length < this.maxSymptoms && !this.selectedSymptoms.includes(symptom)) {
+                        this.selectedSymptoms.push(symptom);
+                        this.searchTerm = "";
+                    }
+                },
+
+                removeSymptom(symptom) {
+                    this.selectedSymptoms = this.selectedSymptoms.filter(s => s !== symptom);
+                }
+            }'>
+                <div class="mb-6 relative">
+                    <label for="symptom-search" class="block text-sm font-medium text-gray-700 mb-1">Search and select
+                        symptoms</label>
+                    <div class="flex items-center">
+                        <div class="relative flex-grow">
+                            <input id="symptom-search" type="text" x-model="searchTerm"
+                                x-on:keydown.enter.prevent="if (filteredSymptoms.length > 0) addSymptom(filteredSymptoms[0])"
+                                placeholder="Type to search symptoms..."
+                                class="block w-full rounded-md border border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                                autocomplete="off">
+                            <div x-show="searchTerm.length > 0" x-cloak
+                                class="absolute z-10 mt-1 w-full bg-white shadow-lg rounded-md border border-gray-200 max-h-60 overflow-y-auto">
+                                <div x-show="filteredSymptoms.length === 0 && searchTerm.length > 0"
+                                    class="p-4 text-sm text-gray-500">
+                                    No symptoms found matching your search
+                                </div>
+                                <ul x-show="filteredSymptoms.length > 0" class="divide-y divide-gray-100">
+                                    <template x-for="symptom in filteredSymptoms" :key="symptom">
+                                        <li x-text="symptom.replace(/_/g, ' ')"
+                                            class="px-4 py-2 hover:bg-primary-50 cursor-pointer text-gray-700 transition"
+                                            @click="addSymptom(symptom)">
+                                        </li>
+                                    </template>
+                                </ul>
+                            </div>
+                        </div>
+                        <span x-show="selectedSymptoms.length > 0" class="ml-2 text-sm text-gray-500"
+                            x-text="`${selectedSymptoms.length}/${maxSymptoms}`"></span>
+                    </div>
+                    <p class="mt-1 text-sm text-gray-500">Select up to 7 symptoms. Be as specific as possible.</p>
+                </div>
+
+                <!-- Selected symptoms badges -->
+                <div class="mb-6">
+                    <div class="flex flex-wrap gap-2" id="selected-symptoms">
+                        <template x-for="symptom in selectedSymptoms" :key="symptom">
+                            <div
+                                class="select-badge inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary-100 text-primary-800">
+                                <input type="hidden" name="symptoms" :value="symptom">
+                                <span x-text="symptom.replace(/_/g, ' ')"></span>
+                                <button type="button" @click="removeSymptom(symptom)"
+                                    class="ml-1.5 inline-flex items-center justify-center rounded-full h-4 w-4 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+
+                        <div x-show="selectedSymptoms.length === 0" class="text-sm text-gray-500 py-2">
+                            No symptoms selected yet
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <button type="submit"
+                        class="w-full py-3 px-4 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md shadow-sm transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                        x-bind:disabled="selectedSymptoms.length === 0">
+                        Analyze Symptoms
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Prediction Results Section -->
+        {% if prediction %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden animate-slide-up">
+            <div class="bg-primary-600 px-6 py-4">
+                <h2 class="text-xl font-semibold text-white">Analysis Results</h2>
+            </div>
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mr-4">
+                        <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900">{{ prediction.disease }}</h3>
+                        <div class="flex items-center">
+                            <div class="h-2 w-24 bg-gray-200 rounded-full mr-2">
+                                <!-- Uncomment if you want a confidence bar -->
+                                <!-- <div class="h-2 bg-primary-600 rounded-full" style="width: {{ prediction.confidence }}%"></div> -->
+                            </div>
+                            <span class="text-sm text-gray-600">{{ prediction.confidence }}% confidence</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="font-medium text-gray-900 mb-2">Based on your symptoms:</h4>
+                    <ul class="list-disc pl-5 text-gray-600">
+                        {% for symptom in prediction.symptoms %}
+                        <li>{{ symptom.replace('_', ' ') }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-yellow-700">
+                                This is not a medical diagnosis. Please consult with a healthcare professional for
+                                proper medical advice.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <a href="/predict"
+                        class="text-primary-600 hover:text-primary-800 font-medium transition duration-150">
+                        Check different symptoms
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Information Section -->
+<section class="py-12 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold text-gray-900">How It Works</h2>
+            <p class="mt-2 text-lg text-gray-600">Understanding our disease prediction process</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                <h3 class="text-xl font-semibold mb-3 text-gray-900">Our Technology</h3>
+                <p class="text-gray-600 mb-3">MediPredict uses machine learning algorithms trained on vast medical
+                    datasets to identify patterns and relationships between symptoms and diseases.</p>
+                <p class="text-gray-600">Our models are continuously improved and validated by healthcare professionals
+                    to ensure accuracy and reliability.</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-6 shadow-sm">
+                <h3 class="text-xl font-semibold mb-3 text-gray-900">Next Steps</h3>
+                <p class="text-gray-600 mb-3">After receiving your prediction, we recommend discussing the results with
+                    your healthcare provider.</p>
+                <p class="text-gray-600">Early detection and professional medical advice are essential for proper
+                    treatment and management of health conditions.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

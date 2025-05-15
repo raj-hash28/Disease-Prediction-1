@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MediPredict - Disease Prediction App{% endblock %}</title>
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                        secondary: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            200: '#99f6e4',
+                            300: '#5eead4',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        accent: {
+                            500: '#f97316',
+                        },
+                        success: {
+                            500: '#10b981',
+                        },
+                        warning: {
+                            500: '#f59e0b',
+                        },
+                        error: {
+                            500: '#ef4444',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.5s ease-in-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+    <!-- Alpine.js for minimal interactivity -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-800">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="flex-shrink-0 flex items-center">
+                        <svg class="h-8 w-8 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        </svg>
+                        <span class="ml-2 text-xl font-semibold text-gray-900">MediPredict</span>
+                    </a>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+                    <a href="/"
+                        class="px-3 py-2 rounded-md text-sm font-medium {% if request.path == '/' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">Home</a>
+                    <a href="/predict"
+                        class="px-3 py-2 rounded-md text-sm font-medium {% if request.path == '/predict' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">Predict</a>
+                    <a href="/about"
+                        class="px-3 py-2 rounded-md text-sm font-medium {% if request.path == '/about' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">About</a>
+                    <!-- <a href="/contact"
+                        class="px-3 py-2 rounded-md text-sm font-medium {% if request.path == '/contact' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">Contact</a> -->
+                </div>
+                <div class="sm:hidden flex items-center">
+                    <button type="button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+                        aria-controls="mobile-menu" aria-expanded="false" x-data="{open: false}" @click="open = !open">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="h-6 w-6" x-show="!open" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg class="h-6 w-6" x-show="open" x-cloak xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile menu -->
+        <div class="sm:hidden" id="mobile-menu" x-data="{open: false}" x-show="open" x-cloak>
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="/"
+                    class="block px-3 py-2 rounded-md text-base font-medium {% if request.path == '/' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">Home</a>
+                <a href="/predict"
+                    class="block px-3 py-2 rounded-md text-base font-medium {% if request.path == '/predict' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">Predict</a>
+                <a href="/about"
+                    class="block px-3 py-2 rounded-md text-base font-medium {% if request.path == '/about' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">About</a>
+                <!-- <a href="/contact"
+                    class="block px-3 py-2 rounded-md text-base font-medium {% if request.path == '/contact' %}text-primary-600 bg-primary-50{% else %}text-gray-700 hover:bg-gray-100{% endif %} transition duration-150">Contact</a> -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="md:flex md:justify-between">
+                <div class="mb-6 md:mb-0">
+                    <a href="/" class="flex items-center">
+                        <svg class="h-8 w-8 text-primary-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                        </svg>
+                        <span class="ml-2 text-xl font-semibold">MediPredict</span>
+                    </a>
+                    <p class="mt-2 text-sm text-gray-300">Predicting diseases with machine learning to help you stay
+                        healthy.</p>
+                </div>
+                <div class="grid grid-cols-2 gap-8 sm:grid-cols-3">
+                    <div>
+                        <h2 class="mb-4 text-sm font-semibold uppercase text-white">Quick Links</h2>
+                        <ul class="text-gray-300">
+                            <li class="mb-2"><a href="/" class="hover:text-white transition duration-150">Home</a></li>
+                            <li class="mb-2"><a href="/predict"
+                                    class="hover:text-white transition duration-150">Predict</a></li>
+                            <li class="mb-2"><a href="/about" class="hover:text-white transition duration-150">About</a>
+                            </li>
+                            <!-- Not used for now -->
+                            <!-- <li><a href="/contact" class="hover:text-white transition duration-150">Contact</a></li> -->
+                        </ul>
+                    </div>
+                    <div>
+                        <h2 class="mb-4 text-sm font-semibold uppercase text-white">Connect</h2>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-300 hover:text-white transition duration-150">
+                                <span class="sr-only">GitHub</span>
+                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill-rule="evenodd"
+                                        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                            <a href="#" class="text-gray-300 hover:text-white transition duration-150">
+                                <span class="sr-only">LinkedIn</span>
+                                <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path fill-rule="evenodd"
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1.41 15.06h-2.67v-7.44h2.67v7.44zm-1.33-8.76c-.82 0-1.49-.65-1.49-1.44s.67-1.44 1.49-1.44c.82 0 1.49.65 1.49 1.44s-.67 1.44-1.49 1.44zm10.74 8.76h-2.67v-4.14c0-1.01-.02-2.32-1.39-2.32-1.39 0-1.6.88-1.6 1.79v4.67h-2.67v-7.44h2.56v1.18h.04c.28-.54 1.11-1.04 2.31-1.04 2.48 0 2.93 1.62 2.93 3.72v3.58z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-6 border-gray-700 sm:mx-auto lg:my-8">
+            <div class="sm:flex sm:items-center sm:justify-between">
+                <span class="text-sm text-gray-300 sm:text-center">© 2025 MediPredict. All Rights Reserved.</span>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
